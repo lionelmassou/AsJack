@@ -3,7 +3,8 @@ import "./App.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Button from './componant/Button.jsx'
 import Cartes from "./componant/Cartes";
-import Game from './componant/Game.jsx'
+import StartGame from './componant/StartGame.jsx'
+import cardsUtils from "./utils/cardsUtils";
 
 class Table extends React.Component {
   constructor() {
@@ -15,7 +16,6 @@ class Table extends React.Component {
       playerCardList: [],
       dealerCardList: [],
       startGame: false,
-      // premierLance: "yes",
       endGame: false,
       nameOfWinner: ""
     }
@@ -27,26 +27,10 @@ class Table extends React.Component {
     "KH", "QH", "JH", "AH", "2H", "3H", "4H", "5H", "6H", "7H", "8H", "9H", "0H",
     "KC", "QC", "JC", "AC", "2C", "3C", "4C", "5C", "6C", "7C", "8C", "9C", "0C"];
 
-  arrayLength = 0;
-  rndCarteTemp = "";
-  rndNumTemp = 0;
-
-  rndCarte() {
-    this.arrayLength = + this.state.playerCardList.length;
-
-    this.rndNumTemp = Math.floor(Math.random() * 53);
-
-    if (this.rndNumTemp > 52) { this.rndNumTemp = this.rndNumTemp - 10 } 
-    else if (this.rndNumTemp < 1) { this.rndNumTemp = this.rndNumTemp + 10 }
-
-    this.rndCarteTemp = this.cardArray[this.rndNumTemp - 1];
-
-    return this.rndCarteTemp
-  }
 
   onClickStop = () => {
-    const cardSelectedDealer = this.rndCarte()
-    const cardSelectedDealer2 = this.rndCarte()
+    const cardSelectedDealer = this.rndCarte
+    const cardSelectedDealer2 = this.rndCarte
 
     const valueCarteDealer = this.transformCardIntoInt(cardSelectedDealer.split("")[0])
     const valueCarteDealer2 = this.transformCardIntoInt(cardSelectedDealer2.split("")[0])
@@ -117,17 +101,11 @@ class Table extends React.Component {
     })
   }
 
-  transformCardIntoInt(cardValue) {
-    if (cardValue === "K" || cardValue === "Q" || cardValue === "J" || cardValue === "A" || cardValue === "0") {
-      cardValue = "10"
-    }
-
-    return parseInt(cardValue)
-  }
-
   startGame = () => {
-    const cardSelected = this.rndCarte()
-    const cardSelected2 = this.rndCarte()
+    <cardsUtils rndCarte={this.rndCarte} transformCardIntoInt={this.transformCardIntoInt}/>
+
+    const cardSelected = this.rndCarte
+    const cardSelected2 = this.rndCarte
 
     const valueCarte = this.transformCardIntoInt(cardSelected.split("")[0])
     const valueCarte2 = this.transformCardIntoInt(cardSelected2.split("")[0])
@@ -143,50 +121,50 @@ class Table extends React.Component {
     })
   }
 
-  render() {
-    if (this.state.startGame === false) {
-      return (
-        <Game startGame={this.startGame} />
-      )
-    } else {
-      return (<div>
+  renderGame() {
+    return (
+      <div className="playGame">
+        <div style={{ height: '100vh', position: 'relative' }}>
+          <h1 style={{ color: '#feb236', textAlign: 'center' }}>Black Jack</h1>
+          <Cartes key={"dealer"} cardList={this.state.dealerCardList} />
+          {this.state.endGame && (<div className='winlost'>
+            <h1>Winner is {this.state.nameOfWinner}</h1>
+          </div>)}
+          <Cartes key={"player"} cardList={this.state.playerCardList} />
 
-        <div className="playGame">
-          <div style={{ height: '100vh', position: 'relative' }}>
-            <h1 style={{ color: '#feb236', textAlign: 'center' }}>Black Jack</h1>
-            <Cartes key={"dealer"} cardList={this.state.dealerCardList} />
-            {this.state.endGame && (<div className='winlost'>
-              <h1>Winner is {this.state.nameOfWinner}</h1>
-            </div>)}
-            <Cartes key={"player"} cardList={this.state.playerCardList} />
-
-            <div style={{ bottom: '20px', position: 'absolute' }} className="row col-6 offset-3 flex d-flex justify-content-between">
-              <div className="d-grid gap-2">
-                <Button
-                  onClick={this.onClickGive}
-                  classe="btn btn-outline-warning btn-lg rounded-pill"
-                  color="white"
-                  bcolor="#0d6efd"
-                  name="Give"
-                />
-              </div>
-              <div>
-              </div>
-              <div className="d-grid gap-2">
-                <Button
-                  onClick={this.onClickStop}
-                  classe="btn btn-outline-warning btn-lg rounded-pill"
-                  color="white"
-                  bcolor="#dc3545"
-                  name="Stop"
-                />
-              </div>
-
+          <div style={{ bottom: '20px', position: 'absolute' }} className="row col-6 offset-3 flex d-flex justify-content-between">
+            <div className="d-grid gap-2">
+              <Button
+                onClick={this.onClickGive}
+                classe="btn btn-outline-warning btn-lg rounded-pill"
+                color="white"
+                bcolor="#0d6efd"
+                name="Give"
+              />
             </div>
+            <div>
+            </div>
+            <div className="d-grid gap-2">
+              <Button
+                onClick={this.onClickStop}
+                classe="btn btn-outline-warning btn-lg rounded-pill"
+                color="white"
+                bcolor="#dc3545"
+                name="Stop"
+              />
+            </div>
+
           </div>
         </div>
       </div>
-      )
+    )
+  }
+
+  render() {
+    if (this.state.startGame === false) {
+      return <StartGame startGame={this.startGame} />
+    } else {
+      return (this.renderGame())
     }
   }
 }
